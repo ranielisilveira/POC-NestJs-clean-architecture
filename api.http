@@ -1,0 +1,14 @@
+GET http://localhost:3000/projects
+
+###
+GET http://localhost:3000/projects/1
+
+###
+POST http://localhost:3000/projects
+Content-Type: application/json
+
+{
+  "name": "Novo projeto2",
+  "description": "Descrição do projeto",
+  "started_at": "2023-11-27"
+}
