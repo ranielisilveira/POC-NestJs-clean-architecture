@@ -4,7 +4,7 @@ import crypto from 'crypto';
 export enum ProjectStatus {
   PENDING = 'pending',
   ACTIVE = 'active',
-  CANCELED = 'canceled',
+  CANCELLED = 'cancelled',
   FINISHED = 'finished',
 }
 
@@ -23,7 +23,10 @@ export class Project {
   started_at: Date | null;
 
   @Column({ nullable: true, type: 'datetime' })
-  canceled_at: Date | null;
+  cancelled_at: Date | null;
+
+  @Column({ nullable: true, type: 'datetime' })
+  finished_at: Date | null;
 
   @Column({ nullable: true, type: 'datetime' })
   forecasted_at: Date | null;
@@ -40,7 +43,7 @@ export class Project {
       name: string;
       description: string;
       started_at?: Date | null;
-      canceled_at?: Date | null;
+      cancelled_at?: Date | null;
       forecasted_at?: Date | null;
     },
     id?: string,
