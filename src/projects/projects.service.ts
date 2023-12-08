@@ -22,18 +22,77 @@ export class ProjectsService {
   }
 
   findAll() {
-    return `This action returns all projects`;
+    return this.projectRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} project`;
+  findOne(id: string) {
+    return this.projectRepository.findOneOrFail({ where: { id } });
   }
 
-  update(id: number, updateProjectDto: UpdateProjectDto) {
-    return `This action updates a #${id} project`;
+  async update(id: string, updateProjectDto: UpdateProjectDto) {
+    const project = await this.projectRepository.findOneOrFail({
+      where: { id },
+    });
+
+    updateProjectDto.name && (project.name = updateProjectDto.name);
+    updateProjectDto.description &&
+      (project.description = updateProjectDto.description);
+
+    if (updateProjectDto.started_at) {
+      if (project.status === ProjectStatus.ACTIVE) {
+        throw new Error('Cannot start activated project');
+      }
+
+      if (project.status === ProjectStatus.FINISHED) {
+        throw new Error('Cannot start completed project');
+      }
+
+      if (project.status === ProjectStatus.CANCELLED) {
+        throw new Error('Cannot start cancelled project');
+      }
+
+      project.started_at = updateProjectDto.started_at;
+      project.status = ProjectStatus.ACTIVE;
+    }
+
+    if (updateProjectDto.cancelled_at) {
+      if (project.status === ProjectStatus.FINISHED) {
+        throw new Error('Cannot cancel completed project');
+      }
+
+      if (project.status === ProjectStatus.CANCELLED) {
+        throw new Error('Cannot cancel cancelled project');
+      }
+
+      if (updateProjectDto.cancelled_at < project.started_at) {
+        throw new Error('Cannot cancel project before it started');
+      }
+
+      project.cancelled_at = updateProjectDto.cancelled_at;
+      project.status = ProjectStatus.CANCELLED;
+    }
+
+    if (updateProjectDto.finished_at) {
+      if (project.status === ProjectStatus.FINISHED) {
+        throw new Error('Cannot finish completed project');
+      }
+
+      if (project.status === ProjectStatus.CANCELLED) {
+        throw new Error('Cannot finish cancelled project');
+      }
+
+      if (updateProjectDto.finished_at < project.started_at) {
+        throw new Error('Cannot finish project before it started');
+      }
+
+      project.finished_at = updateProjectDto.finished_at;
+      project.status = ProjectStatus.FINISHED;
+    }
+
+    return this.projectRepository.save(project);
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} project`;
   }
 }
