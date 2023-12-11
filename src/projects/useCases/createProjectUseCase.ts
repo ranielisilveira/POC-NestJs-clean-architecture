@@ -7,7 +7,7 @@ import { IProjectRepository } from '../projectRespository';
 export class CreateProjectUseCase {
   constructor(
     @Inject('IProjectRepository')
-    private readonly projectRepository: IProjectRepository, //Repository em memoria
+    private readonly projectRepository: IProjectRepository, //Repository in memory
   ) {}
 
   async execute(input: CreateProjectDto) {

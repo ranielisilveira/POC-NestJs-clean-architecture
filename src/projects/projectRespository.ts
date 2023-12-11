@@ -14,22 +14,22 @@ export interface IProjectRepository {
 export class ProjectTypeOrmRepository implements IProjectRepository {
   constructor(
     @InjectRepository(Project)
-    private typeOrmRepo: Repository<Project>,
+    private typeOrmRepository: Repository<Project>,
   ) {}
 
   async create(project: Project): Promise<void> {
-    await this.typeOrmRepo.save(project);
+    await this.typeOrmRepository.save(project);
   }
 
   async update(project: Project): Promise<void> {
-    await this.typeOrmRepo.update(project.id, project);
+    await this.typeOrmRepository.update(project.id, project);
   }
 
   findAll(): Promise<Project[]> {
-    return this.typeOrmRepo.find();
+    return this.typeOrmRepository.find();
   }
 
   findById(id: string): Promise<Project> {
-    return this.typeOrmRepo.findOneOrFail({ where: { id } });
+    return this.typeOrmRepository.findOneOrFail({ where: { id } });
   }
 }
